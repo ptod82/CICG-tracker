@@ -102,7 +102,7 @@ export function ControlPanel({
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search United Kingdom, France, Germany…"
+            placeholder="Search…"
             autoComplete="off"
           />
         </label>
@@ -136,12 +136,12 @@ export function ControlPanel({
         ) : null}
 
         <label>
-          Amount pledged (million USD)
+          Amount pledged
           <input
             value={amount}
             onChange={(event) => setAmount(event.target.value)}
             inputMode="decimal"
-            placeholder="90"
+            placeholder=""
           />
         </label>
 
@@ -191,11 +191,11 @@ export function ControlPanel({
         <h3>Tracker figures</h3>
         <div className="settings-grid">
           <label>
-            Start (M)
+            Start
             <input value={startValue} onChange={(event) => setStartValue(event.target.value)} />
           </label>
           <label>
-            Target (M)
+            Target
             <input value={targetValue} onChange={(event) => setTargetValue(event.target.value)} />
           </label>
         </div>
