@@ -1,6 +1,6 @@
 export const CONFIG = {
   title: 'CICG',
-  subtitle: 'Pledge Tracker',
+  subtitle: 'Replenishment Campaign',
   startMillion: 135,
   targetMillion: 600,
   currency: 'USD',

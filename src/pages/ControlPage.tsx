@@ -1,9 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { CONFIG } from '../config'
 import { ControlPanel } from '../components/ControlPanel'
 import { useTracker } from '../hooks/useTracker'
 import { fetchAuth, unlockWithPin } from '../lib/auth'
-import { moneyMillions } from '../lib/format'
 
 export function ControlPage() {
   const tracker = useTracker('control')
@@ -31,8 +29,7 @@ export function ControlPage() {
   if (gate !== 'open') {
     return (
       <main className="control-page pin-page">
-        <p className="brand-kicker">{CONFIG.title}</p>
-        <h1>Operator console</h1>
+        <h1>Operator Console</h1>
         {gate === 'loading' ? (
           <p className="control-page-lead">Connecting…</p>
         ) : (
@@ -60,23 +57,11 @@ export function ControlPage() {
   return (
     <main className="control-page">
       <header className="control-page-head">
-        <div>
-          <p className="brand-kicker">{CONFIG.title}</p>
-          <h1>Operator console</h1>
-        </div>
-        <a className="ghost-btn" href="/" target="_blank" rel="noreferrer">
-          Open TV display
-        </a>
+        <h1>Operator Console</h1>
       </header>
-      <p className="control-page-lead">
-        The display is showing <strong>{moneyMillions(tracker.totalMillion)}</strong>. Announce a
-        country and amount to play the full-screen animation on the TV.
-      </p>
       <ControlPanel
         variant="page"
         snapshot={tracker.snapshot}
-        totalMillion={tracker.totalMillion}
-        mode={tracker.mode}
         onAdd={tracker.addPledge}
         onUndo={tracker.undo}
         onReset={tracker.reset}

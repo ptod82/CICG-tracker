@@ -1,5 +1,5 @@
 :root {
-  --bg: #060910;
+  --bg: #002d44;
   --navy: #10203c;
   --navy-2: #0b1426;
   --gold: #e8c547;
@@ -11,7 +11,7 @@
   --panel: rgba(8, 14, 28, 0.92);
   --danger: #d36b6b;
   color: var(--ivory);
-  font-family: Outfit, sans-serif;
+  font-family: "Barlow", "Segoe UI", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -56,7 +56,7 @@ img {
 .display {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto auto;
-  padding: 4.2vh 5vw 3.4vh;
+  padding: 3.2vh 5vw 9vh;
   color: var(--ivory);
 }
 
@@ -69,10 +69,8 @@ img {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% -10%, rgba(46, 78, 140, 0.45), transparent 46%),
-    radial-gradient(circle at 12% 80%, rgba(232, 197, 71, 0.08), transparent 28%),
-    radial-gradient(circle at 88% 18%, rgba(90, 140, 220, 0.12), transparent 24%),
-    linear-gradient(180deg, #0c1730 0%, #060910 58%);
+    radial-gradient(ellipse at 50% -12%, rgba(0, 110, 150, 0.45), transparent 52%),
+    linear-gradient(165deg, #014866 0%, #002d44 46%, #001e2e 100%);
   z-index: 0;
 }
 
@@ -92,8 +90,7 @@ img {
 .hero-total,
 .track,
 .recent-row,
-.waiting,
-.open-panel {
+.waiting {
   position: relative;
   z-index: 1;
 }
@@ -102,8 +99,37 @@ img {
 .control-page-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   gap: 24px;
+}
+
+.logo-lockup {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 1.6vw, 28px);
+  background: transparent;
+}
+
+.logo-rule {
+  width: 1px;
+  height: clamp(42px, 5.6vh, 72px);
+  background: rgba(255, 255, 255, 0.45);
+  flex: none;
+}
+
+.brand-logo,
+.hsh-logo {
+  height: clamp(48px, 6.4vh, 80px);
+  width: auto;
+  flex: none;
+}
+
+.event-tag {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(20px, 2vw, 30px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 .brand-kicker {
@@ -117,10 +143,9 @@ img {
 .display-header h1,
 .control-page-head h1 {
   margin: 0;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(32px, 3.6vw, 64px);
+  font-size: clamp(28px, 3.2vw, 56px);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: -0.02em;
 }
 
 .header-actions {
@@ -161,9 +186,10 @@ img {
 
 .total-number {
   margin: 0.08em 0 0.12em;
-  font-family: Oswald, sans-serif;
   font-size: clamp(84px, 14vw, 228px);
   font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
   line-height: 0.86;
   color: var(--gold-bright);
   text-shadow:
@@ -185,11 +211,24 @@ img {
 .track-meta {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 12px;
   color: var(--muted);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: clamp(12px, 1vw, 16px);
+}
+
+.track-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.track-end .target-chip {
+  letter-spacing: 0.12em;
 }
 
 .track-reached {
@@ -288,20 +327,12 @@ img {
 }
 
 .waiting {
-  margin: 0;
+  margin: 3.2vh 0 0;
   text-align: center;
-  color: var(--muted);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  font-size: 13px;
-}
-
-.open-panel {
-  border: 1px solid var(--line);
-  background: rgba(0, 0, 0, 0.35);
-  color: var(--ivory);
-  padding: 8px 12px;
-  border-radius: 8px;
+  color: #fff;
+  letter-spacing: 0.02em;
+  font-size: clamp(18px, 1.8vw, 32px);
+  font-weight: 600;
 }
 
 .display .announce {
@@ -321,7 +352,7 @@ img {
 }
 
 .announce-wash {
-  background: radial-gradient(circle at 50% 45%, #16315f 0%, #070b14 62%);
+  background: radial-gradient(circle at 50% 45%, #014866 0%, #002d44 62%);
   animation: fade-in 420ms ease both;
 }
 
@@ -370,7 +401,6 @@ img {
 
 .announce-country {
   margin: 4.2vh 0 0;
-  font-family: 'Cormorant Garamond', serif;
   font-size: clamp(42px, 5.4vw, 92px);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -387,7 +417,6 @@ img {
 
 .announce-amount {
   margin: 0;
-  font-family: Oswald, sans-serif;
   font-size: clamp(72px, 11vw, 180px);
   line-height: 0.9;
   color: var(--gold-bright);
@@ -430,8 +459,8 @@ img {
 .control,
 .control-page {
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(36, 62, 112, 0.35), transparent 42%),
-    var(--bg);
+    radial-gradient(ellipse at 50% 0%, rgba(1, 90, 120, 0.4), transparent 46%),
+    linear-gradient(165deg, #014866 0%, #002d44 50%, #001e2e 100%);
 }
 
 .control.overlay {
@@ -488,8 +517,8 @@ img {
 .pin-form input {
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #0c1424;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: #3d7d96;
   color: var(--ivory);
 }
 
@@ -505,7 +534,7 @@ img {
 .control-history h3,
 .control-settings h3 {
   margin: 0;
-  font-family: 'Cormorant Garamond', serif;
+  font-weight: 700;
 }
 
 .control-kicker {
@@ -542,14 +571,21 @@ img {
   width: 100%;
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: #0c1424;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: #3d7d96;
   color: var(--ivory);
   outline: none;
 }
 
+.control-form input::placeholder,
+.control-settings input::placeholder,
+.pin-form input::placeholder {
+  color: rgba(246, 241, 230, 0.72);
+}
+
 .control-form input:focus,
-.control-settings input:focus {
+.control-settings input:focus,
+.pin-form input:focus {
   border-color: var(--gold);
 }
 

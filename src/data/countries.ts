@@ -174,4 +174,4 @@ export function flagUrl(code: string): string {
   return `https://flagcdn.com/${code}.svg`
 }
 
-export const FEATURED_CODES = ['gb', 'us', 'eu', 'de', 'fr', 'no', 'se', 'nl', 'ca', 'jp', 'ch', 'ae']
+export const FEATURED_CODES = ['gb', 'de', 'fr', 'no', 'ca', 'ch']

@@ -1,15 +1,14 @@
 import { useMemo, useState, type FormEvent } from 'react'
 import { COUNTRIES, FEATURED_CODES } from '../data/countries'
+
+const HIDDEN_DONOR_CODES = new Set(['us', 'eu', 'se', 'nl', 'jp', 'ae'])
 import { moneyMillions } from '../lib/format'
 import type { TrackerSnapshot } from '../types'
-import type { ConnectionMode } from '../hooks/useTracker'
 import { Flag } from './Flag'
 
 type ControlPanelProps = {
   variant: 'page' | 'overlay'
   snapshot: TrackerSnapshot
-  totalMillion: number
-  mode: ConnectionMode
   busy?: boolean
   onClose?: () => void
   onAdd: (input: {
@@ -26,8 +25,6 @@ type ControlPanelProps = {
 export function ControlPanel({
   variant,
   snapshot,
-  totalMillion,
-  mode,
   onClose,
   onAdd,
   onUndo,
@@ -52,6 +49,7 @@ export function ControlPanel({
       )
     }
     return COUNTRIES.filter((country) => {
+      if (HIDDEN_DONOR_CODES.has(country.code)) return false
       const haystack = `${country.name} ${country.shortName} ${country.code}`.toLowerCase().replace(/\./g, '')
       return haystack.includes(needle)
     })
@@ -98,32 +96,13 @@ export function ControlPanel({
 
   return (
     <aside className={`control ${variant}`}>
-      <header className="control-head">
-        <div>
-          <p className="control-kicker">Operator</p>
-          <h2>New pledge</h2>
-        </div>
-        <div className="control-head-actions">
-          <span className={`mode-pill ${mode}`}>{mode === 'live' ? 'Live sync' : mode === 'local' ? 'This computer' : 'Connecting'}</span>
-          {onClose ? (
-            <button type="button" className="ghost-btn" onClick={onClose}>
-              Close
-            </button>
-          ) : null}
-        </div>
-      </header>
-
-      <p className="control-total">
-        Now showing <strong>{moneyMillions(totalMillion)}</strong> of {moneyMillions(snapshot.targetMillion)}
-      </p>
-
       <form onSubmit={submit} className="control-form">
         <label>
           Country / donor
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search United Kingdom, France, E.U.…"
+            placeholder="Search United Kingdom, France, Germany…"
             autoComplete="off"
           />
         </label>

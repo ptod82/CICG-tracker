@@ -1,12 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { CONFIG } from '../config'
-import { formatDisplayAmount, moneyMillions } from '../lib/format'
+import { formatRollingAmount, moneyMillions } from '../lib/format'
 import { useTracker } from '../hooks/useTracker'
 import { Announcement } from './Announcement'
-import { ControlPanel } from './ControlPanel'
 import { Flag } from './Flag'
 import { ProgressTrack } from './ProgressTrack'
-import { fetchAuth } from '../lib/auth'
 import type { Pledge } from '../types'
 
 const seenIds = new Set<string>()
@@ -16,12 +13,11 @@ export function Display() {
   const tracker = useTracker('display')
   const { snapshot, announcement, totalMillion, dismissAnnouncement } = tracker
   const [shown, setShown] = useState(totalMillion)
-  const [panelOpen, setPanelOpen] = useState(false)
   const [idle, setIdle] = useState(false)
   const [queue, setQueue] = useState<Pledge[]>([])
-  const [allowLocalControl, setAllowLocalControl] = useState(true)
   const shownRef = useRef(shown)
   const idleTimer = useRef<number>(0)
+  const rollFrame = useRef(0)
 
   useEffect(() => {
     shownRef.current = shown
@@ -35,30 +31,19 @@ export function Display() {
   }, [announcement])
 
   useEffect(() => {
-    if (queue.length > 0) return
+    if (queue.length > 0 || announcement) return
     setShown(totalMillion)
-  }, [queue.length, totalMillion])
-
-  useEffect(() => {
-    void fetchAuth().then((auth) => {
-      if (auth.pinRequired) setAllowLocalControl(false)
-    })
-  }, [])
+  }, [announcement, queue.length, totalMillion])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (allowLocalControl && (event.key === 'p' || event.key === 'P' || event.key === '+')) {
-        event.preventDefault()
-        setPanelOpen((open) => !open)
-      }
       if (event.key === 'f' || event.key === 'F') {
         void document.documentElement.requestFullscreen?.()
       }
-      if (event.key === 'Escape') setPanelOpen(false)
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [allowLocalControl])
+  }, [])
 
   useEffect(() => {
     const bump = () => {
@@ -83,15 +68,19 @@ export function Display() {
     absorbedIds.add(pledge.id)
     const from = shownRef.current
     const to = from + pledge.amountMillion
-    const duration = 1600
+    const delta = Math.abs(to - from)
+    const duration = Math.min(1900, Math.max(1400, 1000 + delta * 6))
     const start = performance.now()
+    window.cancelAnimationFrame(rollFrame.current)
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration)
-      const eased = 1 - Math.pow(1 - t, 3)
-      setShown(from + (to - from) * eased)
-      if (t < 1) requestAnimationFrame(tick)
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2
+      const value = t === 1 ? to : from + (to - from) * eased
+      shownRef.current = value
+      setShown(value)
+      if (t < 1) rollFrame.current = requestAnimationFrame(tick)
     }
-    requestAnimationFrame(tick)
+    rollFrame.current = requestAnimationFrame(tick)
   }, [])
 
   const finishAnnouncement = useCallback(() => {
@@ -102,33 +91,31 @@ export function Display() {
   const recent = [...snapshot.pledges].slice(-6).reverse()
 
   return (
-    <main className={`display ${idle && !panelOpen ? 'is-idle' : ''}`}>
+    <main className={`display ${idle ? 'is-idle' : ''}`}>
       <div className="display-bg" />
       <header className="display-header">
-        <div>
-          <p className="brand-kicker">{CONFIG.title}</p>
-          <h1>{CONFIG.subtitle}</h1>
+        <div className="logo-lockup">
+          <img className="hsh-logo" src="/hsh-logo.svg" alt="Hope Starts Here" />
+          <span className="logo-rule" aria-hidden="true" />
+          <img className="brand-logo" src="/ecw-logo.png" alt="Education Cannot Wait" />
         </div>
-        <div className="header-actions">
-          {allowLocalControl && !panelOpen && !idle ? (
-            <button type="button" className="open-panel" onClick={() => setPanelOpen(true)}>
-              Add pledge (P)
-            </button>
-          ) : null}
-          <p className="target-chip">Target {moneyMillions(snapshot.targetMillion)}</p>
-        </div>
+        <p className="event-tag">#HLRC26</p>
       </header>
 
       <section className="hero-total">
         <p className="currency-prefix">USD</p>
         <p className="total-number">
           <span className="dollar">$</span>
-          {formatDisplayAmount(shown)}
+          {formatRollingAmount(shown, Number.isInteger(totalMillion) ? 0 : 1)}
         </p>
         <p className="total-unit">Million raised</p>
       </section>
 
-      <ProgressTrack current={shown} target={snapshot.targetMillion} />
+      <ProgressTrack
+        current={shown}
+        target={snapshot.targetMillion}
+        fractionDigits={Number.isInteger(totalMillion) ? 0 : 1}
+      />
 
       {recent.length > 0 ? (
         <ul className="recent-row">
@@ -141,7 +128,7 @@ export function Display() {
           ))}
         </ul>
       ) : (
-        <p className="waiting">Waiting for the next pledge</p>
+        <p className="waiting">#HopeStartsHere</p>
       )}
 
       {currentAnnouncement ? (
@@ -152,21 +139,6 @@ export function Display() {
           onDone={finishAnnouncement}
         />
       ) : null}
-
-      {panelOpen ? (
-        <ControlPanel
-          variant="overlay"
-          snapshot={snapshot}
-          totalMillion={totalMillion}
-          mode={tracker.mode}
-          onClose={() => setPanelOpen(false)}
-          onAdd={tracker.addPledge}
-          onUndo={tracker.undo}
-          onReset={tracker.reset}
-          onSettings={tracker.updateSettings}
-        />
-      ) : null}
-
     </main>
   )
 }

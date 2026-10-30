@@ -9,6 +9,14 @@ export function formatDisplayAmount(n: number): string {
   })
 }
 
+/** Fixed decimal places so a counting number does not change width mid-roll. */
+export function formatRollingAmount(n: number, fractionDigits: number): string {
+  return n.toLocaleString('en-US', {
+    minimumFractionDigits: fractionDigits,
+    maximumFractionDigits: fractionDigits,
+  })
+}
+
 export function moneyMillions(n: number): string {
   return `$${formatDisplayAmount(n)}M`
 }
