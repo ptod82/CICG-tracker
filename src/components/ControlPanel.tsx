@@ -163,7 +163,7 @@ export function ControlPanel({
               type="button"
               className="ghost-btn danger"
               onClick={() => {
-                if (window.confirm('Reset the tracker back to the starting figure?')) {
+                if (window.confirm('Reset the tracker amount?')) {
                   void onReset()
                 }
               }}
