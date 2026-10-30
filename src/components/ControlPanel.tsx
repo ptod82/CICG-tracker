@@ -34,7 +34,7 @@ export function ControlPanel({
   const [query, setQuery] = useState('')
   const [selectedCode, setSelectedCode] = useState('gb')
   const [customName, setCustomName] = useState('')
-  const [amount, setAmount] = useState('90')
+  const [amount, setAmount] = useState('')
   const [error, setError] = useState('')
   const [startValue, setStartValue] = useState(String(snapshot.startMillion))
   const [targetValue, setTargetValue] = useState(String(snapshot.targetMillion))
