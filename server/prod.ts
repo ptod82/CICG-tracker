@@ -20,7 +20,7 @@ const MIME: Record<string, string> = {
   '.ico': 'image/x-icon',
 }
 
-const hub = createHub({ persistPin: true })
+const hub = createHub()
 
 function sendFile(res: http.ServerResponse, filePath: string): void {
   const ext = path.extname(filePath).toLowerCase()

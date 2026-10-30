@@ -7,15 +7,16 @@ Once this is deployed, yes — the TV just opens a URL.
 - **TV in the room:** `https://YOUR-APP-URL/`
 - **You, announcing pledges:** `https://YOUR-APP-URL/control`
 
-Leave the TV browser on the first URL, fullscreen. From your laptop or phone, open `/control`, enter the PIN, and announce. The room screen updates live.
+Leave the TV browser on the first URL, fullscreen. From your laptop or phone, open `/control` and announce. The room screen updates live.
+
+Anyone with the link can open `/control`. There is no PIN or login.
 
 ## Deploy online (Render)
 
 1. Push this repo to GitHub.
 2. In [Render](https://render.com), create a **New Web Service** from that repo.
 3. Render will use `render.yaml`. After it deploys you get a public URL, for example `https://cicg-tracker.onrender.com`.
-4. Set `CONTROL_PIN` in Render **Environment** to a PIN only you know (Dashboard → Environment).
-5. On the TV, open the root URL and go fullscreen. On your device, open `/control`.
+4. On the TV, open the root URL and go fullscreen. On your device, open `/control`.
 
 GitHub Pages / Netlify static hosting will **not** work: the TV and the operator need a live server so pledges sync.
 

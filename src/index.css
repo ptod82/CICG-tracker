@@ -488,40 +488,6 @@ img {
   padding: 40px 48px 64px;
 }
 
-.control-page-lead {
-  max-width: 720px;
-  color: var(--muted);
-}
-
-.pin-page {
-  display: grid;
-  align-content: center;
-  justify-items: start;
-  max-width: 520px;
-  margin: 0 auto;
-}
-
-.pin-form {
-  display: grid;
-  gap: 14px;
-  width: min(420px, 100%);
-  margin-top: 12px;
-}
-
-.pin-form label {
-  display: grid;
-  gap: 6px;
-  color: var(--muted);
-}
-
-.pin-form input {
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  background: #3d7d96;
-  color: var(--ivory);
-}
-
 .control-head,
 .control-row {
   display: flex;
@@ -578,14 +544,12 @@ img {
 }
 
 .control-form input::placeholder,
-.control-settings input::placeholder,
-.pin-form input::placeholder {
+.control-settings input::placeholder {
   color: rgba(246, 241, 230, 0.72);
 }
 
 .control-form input:focus,
-.control-settings input:focus,
-.pin-form input:focus {
+.control-settings input:focus {
   border-color: var(--gold);
 }
 

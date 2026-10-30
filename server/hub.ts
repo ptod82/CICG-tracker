@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
@@ -24,8 +23,6 @@ type ServerMessage =
   | { type: 'reset'; snapshot: TrackerSnapshot }
 
 const STATE_FILE = path.resolve('data/state.json')
-const PIN_FILE = path.resolve('data/pin.txt')
-const COOKIE_NAME = 'cicg_op'
 
 const initialSnapshot = (): TrackerSnapshot => ({
   startMillion: 135,
@@ -54,36 +51,6 @@ function writeState(snapshot: TrackerSnapshot): void {
   fs.writeFileSync(STATE_FILE, JSON.stringify(snapshot, null, 2))
 }
 
-function resolvePin(): string {
-  if (process.env.CONTROL_PIN) return process.env.CONTROL_PIN
-  if (process.env.NODE_ENV !== 'production') return ''
-  try {
-    const existing = fs.readFileSync(PIN_FILE, 'utf8').trim()
-    if (existing) return existing
-  } catch {
-    /* generate a pin for this deployment */
-  }
-  const generated = String(Math.floor(100000 + Math.random() * 900000))
-  fs.mkdirSync(path.dirname(PIN_FILE), { recursive: true })
-  fs.writeFileSync(PIN_FILE, generated)
-  console.log(`\n  Operator PIN: ${generated}\n  Open /control and enter this PIN.\n`)
-  return generated
-}
-
-function pinToken(pin: string): string {
-  return createHash('sha256').update(`cicg-tracker:${pin}`).digest('hex')
-}
-
-function parseCookies(header?: string): Record<string, string> {
-  const out: Record<string, string> = {}
-  if (!header) return out
-  for (const part of header.split(';')) {
-    const [key, ...rest] = part.trim().split('=')
-    if (key) out[key] = decodeURIComponent(rest.join('='))
-  }
-  return out
-}
-
 function readBody(req: IncomingMessage): Promise<string> {
   return new Promise((resolve, reject) => {
     const chunks: Buffer[] = []
@@ -99,11 +66,9 @@ function sendJson(res: ServerResponse, status: number, body: unknown): void {
   res.end(JSON.stringify(body))
 }
 
-export function createHub(options: { persistPin?: boolean } = {}) {
+export function createHub() {
   let snapshot = readState()
   const clients = new Set<ServerResponse>()
-  const pin = options.persistPin ? resolvePin() : process.env.CONTROL_PIN || ''
-  const expectedToken = pin ? pinToken(pin) : ''
 
   const persist = (next: TrackerSnapshot) => {
     snapshot = next
@@ -123,11 +88,6 @@ export function createHub(options: { persistPin?: boolean } = {}) {
     }
   }, 20000).unref()
 
-  const isUnlocked = (req: IncomingMessage) => {
-    if (!pin) return true
-    return parseCookies(req.headers.cookie)[COOKIE_NAME] === expectedToken
-  }
-
   const handle = async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
     const url = req.url?.split('?')[0] ?? ''
     if (url === '/health') {
@@ -136,26 +96,6 @@ export function createHub(options: { persistPin?: boolean } = {}) {
     }
     if (!url.startsWith('/api/')) {
       next()
-      return
-    }
-
-    if (url === '/api/auth' && req.method === 'GET') {
-      sendJson(res, 200, { pinRequired: Boolean(pin), unlocked: isUnlocked(req) })
-      return
-    }
-
-    if (url === '/api/unlock' && req.method === 'POST') {
-      const body = JSON.parse((await readBody(req)) || '{}') as { pin?: string }
-      if (!pin || body.pin === pin) {
-        const secure = req.headers['x-forwarded-proto'] === 'https' ? '; Secure' : ''
-        res.setHeader(
-          'Set-Cookie',
-          `${COOKIE_NAME}=${expectedToken || 'open'}; HttpOnly; SameSite=Lax; Path=/; Max-Age=86400${secure}`,
-        )
-        sendJson(res, 200, { ok: true })
-        return
-      }
-      sendJson(res, 401, { error: 'Wrong PIN' })
       return
     }
 
@@ -176,11 +116,6 @@ export function createHub(options: { persistPin?: boolean } = {}) {
       req.on('close', () => {
         clients.delete(res)
       })
-      return
-    }
-
-    if (!isUnlocked(req)) {
-      sendJson(res, 401, { error: 'Unlock the operator console first' })
       return
     }
 
@@ -250,5 +185,5 @@ export function createHub(options: { persistPin?: boolean } = {}) {
     sendJson(res, 404, { error: 'Not found' })
   }
 
-  return { handle, pinRequired: Boolean(pin) }
+  return { handle }
 }
