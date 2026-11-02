@@ -15,20 +15,26 @@ export function ProgressTrack({ current, target, fractionDigits = 0 }: ProgressT
     <div className="track">
       <div className="track-meta">
         <span>Raised ${formatRollingAmount(current, fractionDigits)}M</span>
-        <span className="track-end">
-          <span className="target-chip">Target</span>
-        </span>
       </div>
       <div className="track-bar" role="progressbar" aria-valuenow={Math.round(percent)} aria-valuemin={0} aria-valuemax={100}>
         <div className={`track-fill ${reached ? 'is-complete' : ''}`} style={{ width: `${percent}%` }} />
         <div className="track-head" style={{ left: `${percent}%` }} />
       </div>
       <div className="track-ticks">
-        {ticks.map((tick) => (
-          <span key={tick} style={{ left: `${clampPercent(tick, target)}%` }}>
-            ${formatDisplayAmount(tick)}M
-          </span>
-        ))}
+        {ticks.map((tick, index) => {
+          const isTarget = index === ticks.length - 1
+          return (
+            <span key={tick} className={isTarget ? 'is-target' : undefined} style={{ left: `${clampPercent(tick, target)}%` }}>
+              {isTarget ? (
+                <>
+                  <span className="target-chip">Target</span>
+                  <span className="target-stem" aria-hidden="true" />
+                </>
+              ) : null}
+              ${formatDisplayAmount(tick)}M
+            </span>
+          )
+        })}
       </div>
     </div>
   )

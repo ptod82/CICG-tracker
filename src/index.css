@@ -160,6 +160,7 @@ img {
   padding: 0.55em 1.1em;
   border: 1px solid var(--line);
   border-radius: 999px;
+  font-weight: 400;
   color: var(--gold-bright);
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -205,7 +206,7 @@ img {
 
 .track {
   width: min(1480px, 100%);
-  margin: 0 auto 2.4vh;
+  margin: 0 auto 6.4vh;
 }
 
 .track-meta {
@@ -213,22 +214,12 @@ img {
   justify-content: space-between;
   align-items: center;
   gap: 16px;
+  min-height: calc(2.3em + 2px);
   margin-bottom: 12px;
   color: var(--muted);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: clamp(18px, 1.55vw, 26px);
-}
-
-.track-end {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 12px;
-}
-
-.track-end .target-chip {
-  letter-spacing: 0.12em;
 }
 
 .track-reached {
@@ -286,8 +277,28 @@ img {
 
 .track-ticks span:last-child {
   transform: translateX(-100%);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gold-bright);
+}
+
+.track-ticks span.is-target .target-chip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 22px + clamp(22px, 6vh, 44px));
+  transform: translateX(-50%);
+}
+
+.track-ticks span.is-target .target-stem {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 38px);
+  width: 1px;
+  height: calc(16px + clamp(10px, 0.7vh, 12px));
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--gold-bright);
+  box-shadow: 0 0 12px rgba(232, 197, 71, 0.85);
+  z-index: 2;
 }
 
 .recent-row {
@@ -427,10 +438,11 @@ img {
 }
 
 .announce-currency {
-  margin: 1vh 0 0;
+  margin: 1.4vh 0 0;
   letter-spacing: 0.42em;
   text-transform: uppercase;
   color: var(--muted);
+  font-size: clamp(22px, 2.2vw, 36px);
   animation: fade-in 600ms 900ms both;
 }
 

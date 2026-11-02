@@ -15,6 +15,7 @@ export function Display() {
   const [shown, setShown] = useState(totalMillion)
   const [idle, setIdle] = useState(false)
   const [queue, setQueue] = useState<Pledge[]>([])
+  const [labelsLarge, setLabelsLarge] = useState(false)
   const shownRef = useRef(shown)
   const idleTimer = useRef<number>(0)
   const rollFrame = useRef(0)
@@ -34,6 +35,14 @@ export function Display() {
     if (queue.length > 0 || announcement) return
     setShown(totalMillion)
   }, [announcement, queue.length, totalMillion])
+
+  useEffect(() => {
+    if (snapshot.pledges.length === 0) {
+      setLabelsLarge(false)
+      return
+    }
+    if (!announcement && queue.length === 0) setLabelsLarge(true)
+  }, [announcement, queue.length, snapshot.pledges.length])
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -91,7 +100,7 @@ export function Display() {
   const recent = [...snapshot.pledges].slice(-6).reverse()
 
   return (
-    <main className={`display ${idle ? 'is-idle' : ''}`}>
+    <main className={`display ${idle ? 'is-idle' : ''} ${labelsLarge ? 'is-pledged' : ''}`}>
       <div className="display-bg" />
       <header className="display-header">
         <div className="logo-lockup">
@@ -135,7 +144,10 @@ export function Display() {
         <Announcement
           key={currentAnnouncement.id}
           pledge={currentAnnouncement}
-          onAbsorb={() => animateBy(currentAnnouncement)}
+          onAbsorb={() => {
+            animateBy(currentAnnouncement)
+            setLabelsLarge(true)
+          }}
           onDone={finishAnnouncement}
         />
       ) : null}
