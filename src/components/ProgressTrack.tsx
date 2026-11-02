@@ -1,4 +1,4 @@
-import { clampPercent, formatDisplayAmount, formatRollingAmount, moneyMillions } from '../lib/format'
+import { clampPercent, formatDisplayAmount, formatRollingAmount } from '../lib/format'
 
 type ProgressTrackProps = {
   current: number
@@ -16,7 +16,7 @@ export function ProgressTrack({ current, target, fractionDigits = 0 }: ProgressT
       <div className="track-meta">
         <span>Raised ${formatRollingAmount(current, fractionDigits)}M</span>
         <span className="track-end">
-          <span className="target-chip">Target {moneyMillions(target)}</span>
+          <span className="target-chip">Target</span>
         </span>
       </div>
       <div className="track-bar" role="progressbar" aria-valuenow={Math.round(percent)} aria-valuemin={0} aria-valuemax={100}>
