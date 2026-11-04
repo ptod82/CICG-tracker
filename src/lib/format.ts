@@ -18,7 +18,7 @@ export function formatRollingAmount(n: number, fractionDigits: number): string {
 }
 
 export function moneyMillions(n: number): string {
-  return `$${formatDisplayAmount(n)}M`
+  return `US$${formatDisplayAmount(n)}M`
 }
 
 export function totalOf(startMillion: number, pledges: { amountMillion: number }[]): number {

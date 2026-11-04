@@ -1,10 +1,12 @@
 import { useMemo, useState, type FormEvent } from 'react'
-import { COUNTRIES, FEATURED_CODES } from '../data/countries'
-
-const HIDDEN_DONOR_CODES = new Set(['us', 'eu', 'se', 'nl', 'jp', 'ae'])
+import { COUNTRIES, PLEDGE_COUNTRY_CODES } from '../data/countries'
 import { moneyMillions } from '../lib/format'
 import type { TrackerSnapshot } from '../types'
 import { Flag } from './Flag'
+
+const PLEDGE_COUNTRIES = PLEDGE_COUNTRY_CODES.map((code) =>
+  COUNTRIES.find((country) => country.code === code),
+).filter((country): country is (typeof COUNTRIES)[number] => Boolean(country))
 
 type ControlPanelProps = {
   variant: 'page' | 'overlay'
@@ -33,23 +35,17 @@ export function ControlPanel({
 }: ControlPanelProps) {
   const [query, setQuery] = useState('')
   const [selectedCode, setSelectedCode] = useState('gb')
-  const [customName, setCustomName] = useState('')
   const [amount, setAmount] = useState('')
   const [error, setError] = useState('')
   const [startValue, setStartValue] = useState(String(snapshot.startMillion))
   const [targetValue, setTargetValue] = useState(String(snapshot.targetMillion))
   const [submitting, setSubmitting] = useState(false)
 
-  const selected = COUNTRIES.find((country) => country.code === selectedCode) ?? COUNTRIES[0]
+  const selected = PLEDGE_COUNTRIES.find((country) => country.code === selectedCode) ?? PLEDGE_COUNTRIES[0]
   const matches = useMemo(() => {
     const needle = query.trim().toLowerCase().replace(/\./g, '')
-    if (!needle) {
-      return FEATURED_CODES.map((code) => COUNTRIES.find((country) => country.code === code)).filter(
-        (country): country is (typeof COUNTRIES)[number] => Boolean(country),
-      )
-    }
-    return COUNTRIES.filter((country) => {
-      if (HIDDEN_DONOR_CODES.has(country.code)) return false
+    if (!needle) return PLEDGE_COUNTRIES
+    return PLEDGE_COUNTRIES.filter((country) => {
       const haystack = `${country.name} ${country.shortName} ${country.code}`.toLowerCase().replace(/\./g, '')
       return haystack.includes(needle)
     })
@@ -62,16 +58,13 @@ export function ControlPanel({
       setError('Enter a pledge amount in millions, for example 90')
       return
     }
-    const isOther = selected.code === 'other'
-    const countryName = isOther ? customName.trim() || 'Donor' : selected.name
-    const shortName = isOther ? countryName : selected.shortName
     setError('')
     setSubmitting(true)
     try {
       await onAdd({
         countryCode: selected.code,
-        countryName,
-        shortName,
+        countryName: selected.name,
+        shortName: selected.shortName,
         amountMillion,
       })
       setAmount('')
@@ -123,17 +116,6 @@ export function ControlPanel({
             </button>
           ))}
         </div>
-
-        {selected.code === 'other' ? (
-          <label>
-            Donor name
-            <input
-              value={customName}
-              onChange={(event) => setCustomName(event.target.value)}
-              placeholder="Foundation, organisation…"
-            />
-          </label>
-        ) : null}
 
         <label>
           Amount pledged

@@ -102,29 +102,16 @@ export function Display() {
   return (
     <main className={`display ${idle ? 'is-idle' : ''} ${labelsLarge ? 'is-pledged' : ''}`}>
       <div className="display-bg" />
-      <header className="display-header">
-        <div className="logo-lockup">
-          <img className="hsh-logo" src="/hsh-logo.svg" alt="Hope Starts Here" />
-          <span className="logo-rule" aria-hidden="true" />
-          <img className="brand-logo" src="/ecw-logo.png" alt="Education Cannot Wait" />
-        </div>
-        <p className="event-tag">#HLRC26</p>
-      </header>
-
       <section className="hero-total">
-        <p className="currency-prefix">USD</p>
         <p className="total-number">
-          <span className="dollar">$</span>
+          <span className="dollar">US$</span>
           {formatRollingAmount(shown, Number.isInteger(totalMillion) ? 0 : 1)}
+          M
         </p>
-        <p className="total-unit">Million raised</p>
+        <p className="total-unit">Raised</p>
       </section>
 
-      <ProgressTrack
-        current={shown}
-        target={snapshot.targetMillion}
-        fractionDigits={Number.isInteger(totalMillion) ? 0 : 1}
-      />
+      <ProgressTrack current={shown} target={snapshot.targetMillion} />
 
       {recent.length > 0 ? (
         <ul className="recent-row">
@@ -136,9 +123,7 @@ export function Display() {
             </li>
           ))}
         </ul>
-      ) : (
-        <p className="waiting">#HopeStartsHere</p>
-      )}
+      ) : null}
 
       {currentAnnouncement ? (
         <Announcement

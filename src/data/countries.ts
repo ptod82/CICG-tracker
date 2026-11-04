@@ -174,4 +174,5 @@ export function flagUrl(code: string): string {
   return `https://flagcdn.com/${code}.svg`
 }
 
-export const FEATURED_CODES = ['gb', 'de', 'fr', 'no', 'ca', 'ch']
+/** The only countries that can be searched and announced as pledges. */
+export const PLEDGE_COUNTRY_CODES = ['gb', 'de', 'no', 'ca', 'ie', 'ch'] as const

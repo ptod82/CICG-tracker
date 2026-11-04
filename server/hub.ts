@@ -1,6 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import type { IncomingMessage, ServerResponse } from 'node:http'
+import { COUNTRIES, PLEDGE_COUNTRY_CODES } from '../src/data/countries.ts'
+
+const PLEDGE_CODES = new Set<string>(PLEDGE_COUNTRY_CODES)
 
 type Pledge = {
   id: string
@@ -25,7 +28,7 @@ type ServerMessage =
 const STATE_FILE = path.resolve('data/state.json')
 
 const initialSnapshot = (): TrackerSnapshot => ({
-  startMillion: 135,
+  startMillion: 135.8,
   targetMillion: 600,
   pledges: [],
 })
@@ -127,15 +130,16 @@ export function createHub() {
         amountMillion: number
       }
       const amount = Number(body.amountMillion)
-      if (!body.countryCode || !body.countryName || !Number.isFinite(amount) || amount <= 0) {
+      const donor = COUNTRIES.find((country) => country.code === body.countryCode)
+      if (!donor || !PLEDGE_CODES.has(donor.code) || !Number.isFinite(amount) || amount <= 0) {
         sendJson(res, 400, { error: 'Invalid pledge' })
         return
       }
       const pledge: Pledge = {
         id: crypto.randomUUID(),
-        countryCode: body.countryCode,
-        countryName: body.countryName,
-        shortName: body.shortName || body.countryName,
+        countryCode: donor.code,
+        countryName: donor.name,
+        shortName: donor.shortName,
         amountMillion: amount,
         at: Date.now(),
       }

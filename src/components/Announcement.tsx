@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { Pledge } from '../types'
-import { moneyMillions } from '../lib/format'
+import { formatDisplayAmount } from '../lib/format'
 import { Flag } from './Flag'
 
 type AnnouncementProps = {
@@ -44,8 +44,11 @@ export function Announcement({ pledge, onAbsorb, onDone }: AnnouncementProps) {
         </div>
         <p className="announce-country">{pledge.shortName}</p>
         <div className="announce-rule" />
-        <p className="announce-amount">{moneyMillions(pledge.amountMillion)}</p>
-        <p className="announce-currency">USD pledged</p>
+        <p className="announce-amount">
+          <span className="dollar">US$</span>
+          {formatDisplayAmount(pledge.amountMillion)}M
+        </p>
+        <p className="announce-currency">Pledged</p>
       </div>
     </div>
   )

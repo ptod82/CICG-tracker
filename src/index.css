@@ -55,8 +55,8 @@ img {
 
 .display {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto auto;
-  padding: 3.2vh 5vw 9vh;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  padding: 1.4vh 5vw 8vh;
   color: var(--ivory);
 }
 
@@ -86,50 +86,18 @@ img {
   opacity: 0.4;
 }
 
-.display-header,
 .hero-total,
 .track,
-.recent-row,
-.waiting {
+.recent-row {
   position: relative;
   z-index: 1;
 }
 
-.display-header,
 .control-page-head {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 24px;
-}
-
-.logo-lockup {
-  display: flex;
-  align-items: center;
-  gap: clamp(14px, 1.6vw, 28px);
-  background: transparent;
-}
-
-.logo-rule {
-  width: 1px;
-  height: clamp(42px, 5.6vh, 72px);
-  background: rgba(255, 255, 255, 0.45);
-  flex: none;
-}
-
-.brand-logo,
-.hsh-logo {
-  height: clamp(48px, 6.4vh, 80px);
-  width: auto;
-  flex: none;
-}
-
-.event-tag {
-  margin: 0;
-  color: #fff;
-  font-size: clamp(20px, 2vw, 30px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
 }
 
 .brand-kicker {
@@ -140,7 +108,6 @@ img {
   text-transform: uppercase;
 }
 
-.display-header h1,
 .control-page-head h1 {
   margin: 0;
   font-size: clamp(28px, 3.2vw, 56px);
@@ -174,9 +141,9 @@ img {
   justify-content: center;
   text-align: center;
   min-height: 0;
+  margin-bottom: 10.2vh;
 }
 
-.currency-prefix,
 .total-unit {
   margin: 0;
   letter-spacing: 0.38em;
@@ -187,10 +154,12 @@ img {
 
 .total-number {
   margin: 0.08em 0 0.12em;
+  font-family: "Barlow Condensed", "Arial Narrow", sans-serif;
   font-size: clamp(84px, 14vw, 228px);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum";
+  letter-spacing: -0.01em;
   line-height: 0.86;
   color: var(--gold-bright);
   text-shadow:
@@ -200,30 +169,16 @@ img {
 
 .total-number .dollar {
   margin-right: 0.08em;
-  font-weight: 400;
+  font-size: 0.46em;
+  font-weight: 500;
+  letter-spacing: 0;
+  vertical-align: 0.42em;
   opacity: 0.8;
 }
 
 .track {
   width: min(1480px, 100%);
-  margin: 0 auto 6.4vh;
-}
-
-.track-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 16px;
-  min-height: calc(2.3em + 2px);
-  margin-bottom: 12px;
-  color: var(--muted);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-size: clamp(18px, 1.55vw, 26px);
-}
-
-.track-reached {
-  color: var(--gold-bright);
+  margin: 0 auto 20.2vh;
 }
 
 .track-bar {
@@ -303,8 +258,12 @@ img {
 
 .recent-row {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  gap: 18px;
+  align-items: center;
+  column-gap: 18px;
+  row-gap: 14px;
+  width: 100%;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -319,11 +278,14 @@ img {
 }
 
 .recent-row li {
-  padding: 8px 14px;
+  flex: 0 0 auto;
+  padding: 10px 18px;
+  gap: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.03);
-  font-size: clamp(13px, 1vw, 16px);
+  font-size: clamp(18px, 1.55vw, 28px);
+  white-space: nowrap;
 }
 
 .recent-row img,
@@ -332,20 +294,23 @@ img {
 .control-history .flag-fallback,
 .country-list img,
 .country-list .flag-fallback {
-  width: 28px;
-  height: 18px;
   object-fit: cover;
   border-radius: 2px;
   box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-.waiting {
-  margin: 3.2vh 0 0;
-  text-align: center;
-  color: #fff;
-  letter-spacing: 0.02em;
-  font-size: clamp(18px, 1.8vw, 32px);
-  font-weight: 600;
+.recent-row img,
+.recent-row .flag-fallback {
+  width: 56px;
+  height: 36px;
+}
+
+.control-history img,
+.control-history .flag-fallback,
+.country-list img,
+.country-list .flag-fallback {
+  width: 28px;
+  height: 18px;
 }
 
 .display .announce {
@@ -435,6 +400,13 @@ img {
   color: var(--gold-bright);
   text-shadow: 0 0 50px rgba(232, 197, 71, 0.4);
   animation: slam 800ms 620ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.announce-amount .dollar {
+  font-size: 0.46em;
+  margin-right: 0.08em;
+  vertical-align: 0.42em;
+  opacity: 0.85;
 }
 
 .announce-currency {
