@@ -56,4 +56,5 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`CICG tracker ready on http://localhost:${PORT}`)
   console.log(`  TV display:     http://localhost:${PORT}/`)
   console.log(`  Operator panel: http://localhost:${PORT}/control`)
+  console.log(`  Resume:         http://localhost:${PORT}/resume`)
 })
